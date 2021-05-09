@@ -8,7 +8,7 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
     - uses: actions/checkout@v1
-    - name: MSBuild
+    - name: dotnet build
       shell: powershell
       run: dotnet pack -c Release
     - name: Create Release
@@ -21,13 +21,13 @@ jobs:
         release_name: Release 0.0.${{ github.run_number }}
         draft: false
         prerelease: false
-    - name: Upload ARM Zip Release Asset
+    - name: Upload Release Asset
       id: upload-arm-release-asset
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: \bin\Release\DotNetHttpClientExample.1.0.0.nupkg
+        asset_path: bin\Release\DotNetHttpClientExample.1.0.0.nupkg
         asset_name: DotNetHttpClientExample.1.0.0.nupkg
         asset_content_type: application/zip
