@@ -1,0 +1,34 @@
+5 lines (78 sloc) 4.1 KB
+name: RandomQuotes Cloud Service
+on:
+  push:
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+    - uses: actions/checkout@v1
+    - name: MSBuild
+      shell: powershell
+      run: dotnet pack -c Release
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: 0.0.${{ github.run_number }}
+        release_name: Release 0.0.${{ github.run_number }}
+        draft: false
+        prerelease: false
+    - name: Upload ARM Zip Release Asset
+      id: upload-arm-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: \bin\Release\DotNetHttpClientExample.1.0.0.nupkg
+        asset_name: DotNetHttpClientExample.1.0.0.nupkg
+        asset_content_type: application/zip
