@@ -1,4 +1,3 @@
-5 lines (78 sloc) 4.1 KB
 name: RandomQuotes Cloud Service
 on:
   push:
